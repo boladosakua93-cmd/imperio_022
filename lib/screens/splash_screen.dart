@@ -40,15 +40,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void _navigateToNextScreen() {
-    final authProvider = context.read<AuthProvider>();
-    if (authProvider.isLoggedIn) {
-      if (authProvider.isAdmin) {
-        Navigator.pushReplacementNamed(context, '/admin-dashboard');
+    if (mounted) {
+      final authProvider = context.read<AuthProvider>();
+      if (authProvider.isLoggedIn) {
+        if (authProvider.isAdmin) {
+          Navigator.pushReplacementNamed(context, '/admin-dashboard');
+        } else {
+          Navigator.pushReplacementNamed(context, '/employee-dashboard');
+        }
       } else {
-        Navigator.pushReplacementNamed(context, '/employee-dashboard');
+        Navigator.pushReplacementNamed(context, '/login');
       }
-    } else {
-      Navigator.pushReplacementNamed(context, '/login');
     }
   }
 
