@@ -10,6 +10,7 @@ import 'screens/add_vehicle_screen.dart';
 import 'screens/queue_screen.dart';
 import 'screens/cash_register_screen.dart';
 import 'screens/reports_screen.dart';
+import 'screens/employee_dashboard_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
           '/admin-dashboard': (context) => const AdminDashboardScreen(),
-          '/employee-dashboard': (context) => const EmployeeDashboardPlaceholder(),
+          '/employee-dashboard': (context) => const EmployeeDashboardScreen(),
           '/add-vehicle': (context) => const AddVehicleScreen(),
           '/queue': (context) => const QueueScreen(),
           '/cash-register': (context) => const CashRegisterScreen(),
