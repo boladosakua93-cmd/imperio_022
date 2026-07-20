@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/vehicle_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/admin_dashboard_screen.dart';
+import 'screens/add_vehicle_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +22,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => AuthProvider()..initialize(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => VehicleProvider()..initialize(),
         ),
       ],
       child: MaterialApp(
@@ -49,8 +55,12 @@ class MyApp extends StatelessWidget {
           '/splash': (context) => const SplashScreen(),
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
-          '/admin-dashboard': (context) => const AdminDashboardPlaceholder(),
+          '/admin-dashboard': (context) => const AdminDashboardScreen(),
           '/employee-dashboard': (context) => const EmployeeDashboardPlaceholder(),
+          '/add-vehicle': (context) => const AddVehicleScreen(),
+          '/queue': (context) => const QueuePlaceholder(),
+          '/cash-register': (context) => const CashRegisterPlaceholder(),
+          '/reports': (context) => const ReportsPlaceholder(),
         },
       ),
     );
@@ -104,6 +114,42 @@ class EmployeeDashboardPlaceholder extends StatelessWidget {
       body: const Center(
         child: Text('Dashboard Funcionário - Em desenvolvimento'),
       ),
+    );
+  }
+}
+
+class QueuePlaceholder extends StatelessWidget {
+  const QueuePlaceholder({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Fila de Atendimento')),
+      body: const Center(child: Text('Fila - Em desenvolvimento')),
+    );
+  }
+}
+
+class CashRegisterPlaceholder extends StatelessWidget {
+  const CashRegisterPlaceholder({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Caixa')),
+      body: const Center(child: Text('Caixa - Em desenvolvimento')),
+    );
+  }
+}
+
+class ReportsPlaceholder extends StatelessWidget {
+  const ReportsPlaceholder({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Relatórios')),
+      body: const Center(child: Text('Relatórios - Em desenvolvimento')),
     );
   }
 }
