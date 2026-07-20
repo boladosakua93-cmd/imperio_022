@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class DatabaseConfig {
   static const String databaseName = 'imperio_022.db';
@@ -12,7 +14,10 @@ class DatabaseConfig {
     return openDatabase(
       path,
       version: databaseVersion,
-      onCreate: _createDatabase,
+      onCreate: (db, version) async {
+        await _createDatabase(db, version);
+        await _seedDatabase(db);
+      },
       onUpgrade: _upgradeDatabase,
     );
   }
@@ -265,5 +270,59 @@ class DatabaseConfig {
 
   static Future<void> _upgradeDatabase(Database db, int oldVersion, int newVersion) async {
     // Implementar migrações aqui conforme necessário
+  }
+
+  static Future<void> _seedDatabase(Database db) async {
+    try {
+      // Criar usuário Admin: andrepita
+      final adminExists = await db.query(
+        'users',
+        where: 'email = ?',
+        whereArgs: ['andrepita@imperio022.com'],
+      );
+
+      if (adminExists.isEmpty) {
+        final adminPasswordHash = sha256.convert(utf8.encode('Neoqeav2020!')).toString();
+        await db.insert('users', {
+          'uuid': 'admin-andrepita-001',
+          'email': 'andrepita@imperio022.com',
+          'name': 'Andrepita',
+          'phone': '(11) 98888-8888',
+          'password_hash': adminPasswordHash,
+          'role': 'admin',
+          'is_active': 1,
+          'is_blocked': 0,
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+        print('[Database] Usuário Admin (andrepita) criado com sucesso!');
+      }
+
+      // Criar usuário Funcionário: miguel
+      final employeeExists = await db.query(
+        'users',
+        where: 'email = ?',
+        whereArgs: ['miguel@imperio022.com'],
+      );
+
+      if (employeeExists.isEmpty) {
+        final employeePasswordHash = sha256.convert(utf8.encode('miguel123')).toString();
+        await db.insert('users', {
+          'uuid': 'employee-miguel-001',
+          'email': 'miguel@imperio022.com',
+          'name': 'Miguel',
+          'phone': '(11) 99999-9999',
+          'password_hash': employeePasswordHash,
+          'role': 'employee',
+          'is_active': 1,
+          'is_blocked': 0,
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+        print('[Database] Usuário Funcionário (miguel) criado com sucesso!');
+      }
+    } catch (e) {
+      print('[Database] Erro ao fazer seed de usuários: $e');
+    }
   }
 }
