@@ -7,6 +7,7 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/admin_dashboard_screen.dart';
 import 'screens/add_vehicle_screen.dart';
+import 'screens/queue_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
           '/admin-dashboard': (context) => const AdminDashboardScreen(),
           '/employee-dashboard': (context) => const EmployeeDashboardPlaceholder(),
           '/add-vehicle': (context) => const AddVehicleScreen(),
-          '/queue': (context) => const QueuePlaceholder(),
+          '/queue': (context) => const QueueScreen(),
           '/cash-register': (context) => const CashRegisterPlaceholder(),
           '/reports': (context) => const ReportsPlaceholder(),
         },
@@ -118,17 +119,7 @@ class EmployeeDashboardPlaceholder extends StatelessWidget {
   }
 }
 
-class QueuePlaceholder extends StatelessWidget {
-  const QueuePlaceholder({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Fila de Atendimento')),
-      body: const Center(child: Text('Fila - Em desenvolvimento')),
-    );
-  }
-}
 
 class CashRegisterPlaceholder extends StatelessWidget {
   const CashRegisterPlaceholder({Key? key}) : super(key: key);
