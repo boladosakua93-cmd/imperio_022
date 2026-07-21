@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Lê configurações de assinatura do arquivo key.properties (não commitado)
+val keyProperties = Properties()
+val keyPropertiesFile = rootProject.file("key.properties")
+if (keyPropertiesFile.exists()) {
+    keyPropertiesFile.inputStream().use { keyProperties.load(it) }
 }
 
 android {
@@ -14,22 +22,36 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    signingConfigs {
+        create("release") {
+            if (keyPropertiesFile.exists()) {
+                keyAlias        = keyProperties["keyAlias"]        as String
+                keyPassword     = keyProperties["keyPassword"]     as String
+                storeFile       = file(keyProperties["storeFile"]  as String)
+                storePassword   = keyProperties["storePassword"]   as String
+            }
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.imperio_022"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        // TODO: troque pelo Application ID definitivo antes de publicar na Play Store
+        applicationId = "com.imperio022.app"
+        minSdk        = flutter.minSdkVersion
+        targetSdk     = flutter.targetSdkVersion
+        versionCode   = flutter.versionCode
+        versionName   = flutter.versionName
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Usa a assinatura de release se key.properties existir; caso contrário, usa debug
+            signingConfig = if (keyPropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
+            isMinifyEnabled   = false
+            isShrinkResources = false
         }
     }
 }

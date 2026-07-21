@@ -1,3 +1,4 @@
+import '../utils/app_logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -42,7 +43,7 @@ class NotificationService {
     );
 
     _isInitialized = true;
-    print('[NotificationService] Serviço de notificações inicializado');
+    appLogger.d('[NotificationService] Serviço de notificações inicializado');
   }
 
   /// Notificação de novo veículo na fila
@@ -160,9 +161,9 @@ class NotificationService {
         payload: payload,
       );
 
-      print('[NotificationService] Notificação exibida: $title');
+      appLogger.d('[NotificationService] Notificação exibida: $title');
     } catch (e) {
-      print('[NotificationService] Erro ao exibir notificação: $e');
+      appLogger.e('[NotificationService] Erro ao exibir notificação', error: e);
     }
   }
 
@@ -201,9 +202,9 @@ class NotificationService {
             UILocalNotificationDateInterpretation.absoluteTime,
       );
 
-      print('[NotificationService] Notificação agendada para: $scheduledTime');
+      appLogger.d('[NotificationService] Notificação agendada para: $scheduledTime');
     } catch (e) {
-      print('[NotificationService] Erro ao agendar notificação: $e');
+      appLogger.e('[NotificationService] Erro ao agendar notificação', error: e);
     }
   }
 
@@ -211,9 +212,9 @@ class NotificationService {
   Future<void> cancelNotification(int id) async {
     try {
       await _notificationsPlugin.cancel(id);
-      print('[NotificationService] Notificação $id cancelada');
+      appLogger.d('[NotificationService] Notificação $id cancelada');
     } catch (e) {
-      print('[NotificationService] Erro ao cancelar notificação: $e');
+      appLogger.e('[NotificationService] Erro ao cancelar notificação', error: e);
     }
   }
 
@@ -221,9 +222,9 @@ class NotificationService {
   Future<void> cancelAllNotifications() async {
     try {
       await _notificationsPlugin.cancelAll();
-      print('[NotificationService] Todas as notificações foram canceladas');
+      appLogger.d('[NotificationService] Todas as notificações foram canceladas');
     } catch (e) {
-      print('[NotificationService] Erro ao cancelar notificações: $e');
+      appLogger.e('[NotificationService] Erro ao cancelar notificações', error: e);
     }
   }
 
@@ -234,12 +235,12 @@ class NotificationService {
     String? body,
     String? payload,
   ) {
-    print('[NotificationService] Notificação recebida (iOS): $title - $body');
+    appLogger.d('[NotificationService] Notificação recebida (iOS): $title - $body');
   }
 
   /// Callback quando notificação é tocada
   void _onNotificationTapped(NotificationResponse response) {
-    print('[NotificationService] Notificação tocada: ${response.payload}');
+    appLogger.d('[NotificationService] Notificação tocada: ${response.payload}');
     // Aqui você pode navegar para uma tela específica baseado no payload
   }
 }

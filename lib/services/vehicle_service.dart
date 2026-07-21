@@ -1,3 +1,4 @@
+import '../utils/app_logger.dart';
 import 'package:sqflite/sqflite.dart';
 import '../config/database_config.dart';
 import '../models/vehicle_models.dart';

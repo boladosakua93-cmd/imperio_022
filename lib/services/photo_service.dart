@@ -1,3 +1,4 @@
+import '../utils/app_logger.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -27,7 +28,7 @@ class PhotoService {
       }
       return null;
     } catch (e) {
-      print('[PhotoService] Erro ao capturar foto: $e');
+      appLogger.e('[PhotoService] Erro ao capturar foto', error: e);
       return null;
     }
   }
@@ -45,7 +46,7 @@ class PhotoService {
       }
       return null;
     } catch (e) {
-      print('[PhotoService] Erro ao selecionar foto: $e');
+      appLogger.e('[PhotoService] Erro ao selecionar foto', error: e);
       return null;
     }
   }
@@ -92,10 +93,10 @@ class PhotoService {
       final savedFile = File(savedPath);
       await savedFile.writeAsBytes(compressedBytes);
 
-      print('[PhotoService] Foto salva em: $savedPath');
+      appLogger.d('[PhotoService] Foto salva em: $savedPath');
       return savedPath;
     } catch (e) {
-      print('[PhotoService] Erro ao comprimir e salvar foto: $e');
+      appLogger.e('[PhotoService] Erro ao comprimir e salvar foto', error: e);
       rethrow;
     }
   }
@@ -109,7 +110,7 @@ class PhotoService {
       }
       return null;
     } catch (e) {
-      print('[PhotoService] Erro ao obter foto: $e');
+      appLogger.e('[PhotoService] Erro ao obter foto', error: e);
       return null;
     }
   }
@@ -120,12 +121,12 @@ class PhotoService {
       final file = File(photoPath);
       if (await file.exists()) {
         await file.delete();
-        print('[PhotoService] Foto deletada: $photoPath');
+        appLogger.d('[PhotoService] Foto deletada: $photoPath');
         return true;
       }
       return false;
     } catch (e) {
-      print('[PhotoService] Erro ao deletar foto: $e');
+      appLogger.e('[PhotoService] Erro ao deletar foto', error: e);
       return false;
     }
   }
@@ -140,7 +141,7 @@ class PhotoService {
       }
       return 0;
     } catch (e) {
-      print('[PhotoService] Erro ao obter tamanho da foto: $e');
+      appLogger.e('[PhotoService] Erro ao obter tamanho da foto', error: e);
       return 0;
     }
   }
@@ -163,7 +164,7 @@ class PhotoService {
 
       return files;
     } catch (e) {
-      print('[PhotoService] Erro ao listar fotos: $e');
+      appLogger.e('[PhotoService] Erro ao listar fotos', error: e);
       return [];
     }
   }
@@ -176,12 +177,12 @@ class PhotoService {
 
       if (photosDir.existsSync()) {
         photosDir.deleteSync(recursive: true);
-        print('[PhotoService] Todas as fotos foram deletadas');
+        appLogger.d('[PhotoService] Todas as fotos foram deletadas');
         return true;
       }
       return false;
     } catch (e) {
-      print('[PhotoService] Erro ao limpar fotos: $e');
+      appLogger.e('[PhotoService] Erro ao limpar fotos', error: e);
       return false;
     }
   }

@@ -1,3 +1,4 @@
+import '../utils/app_logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
@@ -29,14 +30,14 @@ class ShareService {
           Uri.parse(url),
           mode: LaunchMode.externalApplication,
         );
-        print('[ShareService] Compartilhado via WhatsApp');
+        appLogger.d('[ShareService] Compartilhado via WhatsApp');
         return true;
       } else {
-        print('[ShareService] WhatsApp não está instalado');
+        appLogger.d('[ShareService] WhatsApp não está instalado');
         return false;
       }
     } catch (e) {
-      print('[ShareService] Erro ao compartilhar via WhatsApp: $e');
+      appLogger.e('[ShareService] Erro ao compartilhar via WhatsApp', error: e);
       return false;
     }
   }
@@ -51,14 +52,14 @@ class ShareService {
 
       if (await canLaunchUrl(Uri.parse(url))) {
         await launchUrl(Uri.parse(url));
-        print('[ShareService] Compartilhado via SMS');
+        appLogger.d('[ShareService] Compartilhado via SMS');
         return true;
       } else {
-        print('[ShareService] SMS não disponível');
+        appLogger.d('[ShareService] SMS não disponível');
         return false;
       }
     } catch (e) {
-      print('[ShareService] Erro ao compartilhar via SMS: $e');
+      appLogger.e('[ShareService] Erro ao compartilhar via SMS', error: e);
       return false;
     }
   }
@@ -75,14 +76,14 @@ class ShareService {
 
       if (await canLaunchUrl(Uri.parse(url))) {
         await launchUrl(Uri.parse(url));
-        print('[ShareService] Compartilhado via Email');
+        appLogger.d('[ShareService] Compartilhado via Email');
         return true;
       } else {
-        print('[ShareService] Email não disponível');
+        appLogger.d('[ShareService] Email não disponível');
         return false;
       }
     } catch (e) {
-      print('[ShareService] Erro ao compartilhar via Email: $e');
+      appLogger.e('[ShareService] Erro ao compartilhar via Email', error: e);
       return false;
     }
   }
@@ -208,7 +209,7 @@ Data: ${DateTime.now().toString().split('.')[0]}
         return false;
       }
     } catch (e) {
-      print('[ShareService] Erro ao abrir WhatsApp: $e');
+      appLogger.e('[ShareService] Erro ao abrir WhatsApp', error: e);
       return false;
     }
   }
@@ -227,7 +228,7 @@ Data: ${DateTime.now().toString().split('.')[0]}
         return false;
       }
     } catch (e) {
-      print('[ShareService] Erro ao fazer chamada: $e');
+      appLogger.e('[ShareService] Erro ao fazer chamada', error: e);
       return false;
     }
   }

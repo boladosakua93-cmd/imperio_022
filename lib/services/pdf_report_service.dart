@@ -1,3 +1,4 @@
+import '../utils/app_logger.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -235,10 +236,10 @@ class PdfReportService {
       );
       await file.writeAsBytes(await pdf.save());
 
-      print('[PdfReportService] Relatório salvo em: ${file.path}');
+      appLogger.d('[PdfReportService] Relatório salvo em: ${file.path}');
       return file;
     } catch (e) {
-      print('[PdfReportService] Erro ao gerar relatório: $e');
+      appLogger.e('[PdfReportService] Erro ao gerar relatório', error: e);
       return null;
     }
   }
@@ -410,10 +411,10 @@ class PdfReportService {
       );
       await file.writeAsBytes(await pdf.save());
 
-      print('[PdfReportService] Relatório de caixa salvo em: ${file.path}');
+      appLogger.d('[PdfReportService] Relatório de caixa salvo em: ${file.path}');
       return file;
     } catch (e) {
-      print('[PdfReportService] Erro ao gerar relatório de caixa: $e');
+      appLogger.e('[PdfReportService] Erro ao gerar relatório de caixa', error: e);
       return null;
     }
   }
@@ -425,7 +426,7 @@ class PdfReportService {
         onLayout: (_) => pdfFile.readAsBytes(),
       );
     } catch (e) {
-      print('[PdfReportService] Erro ao abrir PDF: $e');
+      appLogger.e('[PdfReportService] Erro ao abrir PDF', error: e);
     }
   }
 
@@ -437,7 +438,7 @@ class PdfReportService {
         filename: pdfFile.path.split('/').last,
       );
     } catch (e) {
-      print('[PdfReportService] Erro ao compartilhar PDF: $e');
+      appLogger.e('[PdfReportService] Erro ao compartilhar PDF', error: e);
     }
   }
 }
