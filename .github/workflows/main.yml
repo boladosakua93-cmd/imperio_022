@@ -11,25 +11,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version: '3.24.0'
           channel: 'stable'
 
       - name: Get Flutter dependencies
         run: flutter pub get
 
       - name: Build Android APK (Release)
-        run: |
-          flutter build apk \
-            --release \
-            --target-platform=android-arm64 \
-            --no-tree-shake-icons
+        run: flutter build apk --release
         env:
-          GRADLE_OPTS: "-Xmx1024m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC"
+          GRADLE_OPTS: "-Xmx512m"
 
       - name: Upload APK to artifacts
         uses: actions/upload-artifact@v4
