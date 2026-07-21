@@ -32,7 +32,7 @@ jobs:
           GRADLE_OPTS: "-Xmx1024m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC"
 
       - name: Upload APK to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: success()
         with:
           name: app-release-apk
