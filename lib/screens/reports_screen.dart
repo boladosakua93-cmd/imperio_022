@@ -228,11 +228,11 @@ class _BillingReportTab extends StatelessWidget {
                       onTap: () async {
                         try {
                           await pdfService.generateBillingReport(
-                            startDate: startDate,
-                            endDate: endDate,
-                            totalServices: completedCount,
                             totalRevenue: totalRevenue,
+                            totalServices: completedCount,
                             averageTicket: avgTicket,
+                            period: _selectedPeriod,
+                            serviceDetails: [],
                           );
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -263,11 +263,11 @@ class _BillingReportTab extends StatelessWidget {
                       onTap: () async {
                         try {
                           await pdfService.generateBillingReport(
-                            startDate: startDate,
-                            endDate: endDate,
-                            totalServices: completedCount,
                             totalRevenue: totalRevenue,
+                            totalServices: completedCount,
                             averageTicket: avgTicket,
+                            period: _selectedPeriod,
+                            serviceDetails: [],
                           );
                           await pdfService.sharePdf();
                           if (context.mounted) {
