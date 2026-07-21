@@ -1,4 +1,4 @@
-package com.example.imperio_022
+package com.imperio022.imperio_022
 
 import io.flutter.embedding.android.FlutterActivity
 

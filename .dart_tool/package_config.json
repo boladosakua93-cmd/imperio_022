@@ -183,7 +183,7 @@
     },
     {
       "name": "image",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/image-4.8.0",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/image-4.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -381,9 +381,9 @@
     },
     {
       "name": "pdf",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/pdf-3.12.0",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/pdf-3.13.0",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.12"
     },
     {
       "name": "petitparser",
@@ -645,9 +645,9 @@
     },
     {
       "name": "xml",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/xml-6.6.1",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/xml-7.0.1",
       "packageUri": "lib/",
-      "languageVersion": "3.8"
+      "languageVersion": "3.11"
     },
     {
       "name": "yaml",
