@@ -266,7 +266,7 @@ class _BillingReportTab extends StatelessWidget {
                             totalRevenue: totalRevenue,
                             totalServices: completedCount,
                             averageTicket: avgTicket,
-                            period: _selectedPeriod,
+                            period: period,
                             serviceDetails: [],
                           );
                           if (pdfFile != null) {
