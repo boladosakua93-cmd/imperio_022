@@ -1,10 +1,10 @@
-import '../utils/app_logger.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
+import '../utils/app_logger.dart';
 
 class PdfReportService {
   static final PdfReportService _instance = PdfReportService._internal();

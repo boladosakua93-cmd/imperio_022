@@ -262,14 +262,16 @@ class _BillingReportTab extends StatelessWidget {
                       icon: Icons.share,
                       onTap: () async {
                         try {
-                          await pdfService.generateBillingReport(
+                          final pdfFile = await pdfService.generateBillingReport(
                             totalRevenue: totalRevenue,
                             totalServices: completedCount,
                             averageTicket: avgTicket,
                             period: _selectedPeriod,
                             serviceDetails: [],
                           );
-                          await pdfService.sharePdf();
+                          if (pdfFile != null) {
+                            await pdfService.sharePdf(pdfFile);
+                          }
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
