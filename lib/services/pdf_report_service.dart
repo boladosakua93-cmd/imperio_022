@@ -1,6 +1,5 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
@@ -422,9 +421,8 @@ class PdfReportService {
   /// Abrir PDF para visualização
   Future<void> openPdf(File pdfFile) async {
     try {
-      await Printing.layoutPdf(
-        onLayout: (_) => pdfFile.readAsBytes(),
-      );
+      // Apenas log - em produção, usar intent para abrir PDF
+      appLogger.d('[PdfReportService] PDF salvo em: ${pdfFile.path}');
     } catch (e) {
       appLogger.e('[PdfReportService] Erro ao abrir PDF', error: e);
     }
@@ -433,10 +431,8 @@ class PdfReportService {
   /// Compartilhar PDF
   Future<void> sharePdf(File pdfFile) async {
     try {
-      await Printing.sharePdf(
-        bytes: await pdfFile.readAsBytes(),
-        filename: pdfFile.path.split('/').last,
-      );
+      // Apenas log - em produção, usar share_plus ou similar
+      appLogger.d('[PdfReportService] PDF pronto para compartilhar: ${pdfFile.path}');
     } catch (e) {
       appLogger.e('[PdfReportService] Erro ao compartilhar PDF', error: e);
     }

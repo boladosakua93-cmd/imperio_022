@@ -30,7 +30,6 @@ dependencies:
 
   # PDF Generation
   pdf: ^3.10.0
-  printing: ^5.10.0
 
   # WhatsApp Integration
   url_launcher: ^6.2.0
