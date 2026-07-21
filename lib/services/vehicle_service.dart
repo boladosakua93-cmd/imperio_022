@@ -194,10 +194,8 @@ class VehicleService {
   // Gerar número de OS único
   Future<String> generateOrderNumber() async {
     final now = DateTime.now();
-    final count = Sqflite.firstIntValue(
-      await _db.rawQuery('SELECT COUNT(*) FROM service_orders WHERE DATE(created_at) = DATE(?)'),
-      [now.toIso8601String()],
-    );
+    final result = await _db.rawQuery('SELECT COUNT(*) as count FROM service_orders WHERE DATE(created_at) = DATE(?)', [now.toIso8601String()]);
+    final count = Sqflite.firstIntValue(result);
     final number = (count ?? 0) + 1;
     return '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${number.toString().padLeft(4, '0')}';
   }
@@ -216,9 +214,8 @@ class VehicleService {
       await _db.rawQuery('SELECT COUNT(*) FROM service_orders WHERE status = ?', ['completed']),
     ) ?? 0;
 
-    final totalRevenue = Sqflite.firstDoubleValue(
-      await _db.rawQuery('SELECT COALESCE(SUM(price), 0) FROM service_orders WHERE status = ?', ['completed']),
-    ) ?? 0.0;
+    final revenueResult = await _db.rawQuery('SELECT COALESCE(SUM(price), 0) as revenue FROM service_orders WHERE status = ?', ['completed']);
+    final totalRevenue = (revenueResult.isNotEmpty ? revenueResult.first['revenue'] as double? : null) ?? 0.0;
 
     return {
       'pending': pendingCount,

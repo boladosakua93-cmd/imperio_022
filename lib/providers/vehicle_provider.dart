@@ -24,6 +24,13 @@ class VehicleProvider extends ChangeNotifier {
   Map<String, dynamic> get dashboardStats => _dashboardStats;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  
+  // Getters para dashboard
+  int get pendingCount => _dashboardStats['pending'] ?? 0;
+  int get inProgressCount => _dashboardStats['in_progress'] ?? 0;
+  int get completedCount => _dashboardStats['completed'] ?? 0;
+  double get totalRevenue => (_dashboardStats['total_revenue'] ?? 0.0).toDouble();
+  List<ServiceOrderModel> get allServiceOrders => _serviceOrders;
 
   // Inicializar
   Future<void> initialize() async {
