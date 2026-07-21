@@ -259,7 +259,7 @@ class _CashRegisterScreenState extends State<CashRegisterScreen> {
     );
   }
 
-  void _openCashRegister() {
+  void _openCashRegister() async {
     final balance = double.tryParse(_openingBalanceController.text);
     if (balance == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -268,16 +268,21 @@ class _CashRegisterScreenState extends State<CashRegisterScreen> {
       return;
     }
 
-    setState(() {
-      _isOpen = true;
-      _currentBalance = balance;
-      _totalEntries = 0;
-      _totalWithdrawals = 0;
-    });
+    final vehicleProvider = context.read<VehicleProvider>();
+    final success = await vehicleProvider.openCashRegister(balance);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Caixa aberto com R\$ ${balance.toStringAsFixed(2)}')),
-    );
+    if (success && mounted) {
+      setState(() {
+        _isOpen = true;
+        _currentBalance = balance;
+        _totalEntries = 0;
+        _totalWithdrawals = 0;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Caixa aberto com R\$ ${balance.toStringAsFixed(2)}')),
+      );
+    }
   }
 
   void _closeCashRegister() {

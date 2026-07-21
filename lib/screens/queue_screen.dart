@@ -170,9 +170,15 @@ class _QueueCard extends StatelessWidget {
                   children: [
                     const Icon(Icons.directions_car, color: Color(0xFF9CA3AF), size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      'Placa: ${order.uuid.substring(0, 8).toUpperCase()}',
-                      style: const TextStyle(color: Color(0xFF9CA3AF)),
+                    FutureBuilder<VehicleModel?>(
+                      future: context.read<VehicleProvider>().getVehicleById(order.vehicleId),
+                      builder: (context, snapshot) {
+                        final vehicle = snapshot.data;
+                        return Text(
+                          'Placa: ${vehicle?.licensePlate ?? "N/A"}',
+                          style: const TextStyle(color: Color(0xFF9CA3AF)),
+                        );
+                      },
                     ),
                   ],
                 ),
