@@ -175,7 +175,7 @@ class _QueueCard extends StatelessWidget {
                       builder: (context, snapshot) {
                         final vehicle = snapshot.data;
                         return Text(
-                          'Placa: ${vehicle?.licensePlate ?? "N/A"}',
+                          'Placa: ${vehicle?.plate ?? "N/A"}',
                           style: const TextStyle(color: Color(0xFF9CA3AF)),
                         );
                       },

@@ -231,7 +231,7 @@ class _BillingReportTab extends StatelessWidget {
                             totalRevenue: totalRevenue,
                             totalServices: completedCount,
                             averageTicket: avgTicket,
-                            period: _selectedPeriod,
+                            period: period,
                             serviceDetails: [],
                           );
                           if (context.mounted) {
@@ -414,7 +414,7 @@ class _ServiceReportTab extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  service.description,
+                                  service.description ?? 'Sem descrição',
                                   style: const TextStyle(
                                     color: Color(0xFF9CA3AF),
                                     fontSize: 12,
