@@ -150,6 +150,16 @@ class VehicleProvider extends ChangeNotifier {
     }
   }
 
+  Future<VehicleModel?> getVehicleById(int id) async {
+    try {
+      return _vehicles.firstWhere((v) => v.id == id);
+    } catch (e) {
+      _error = 'Erro ao buscar veículo: $e';
+      notifyListeners();
+      return null;
+    }
+  }
+
   // ============ ORDENS DE SERVIÇO ============
   Future<bool> createServiceOrder(ServiceOrderModel order) async {
     try {
@@ -213,6 +223,19 @@ class VehicleProvider extends ChangeNotifier {
     } catch (e) {
       _error = 'Erro ao atualizar estatísticas: $e';
       notifyListeners();
+    }
+  }
+
+  // ============ CAIXA ============
+  Future<bool> openCashRegister(double openingBalance) async {
+    try {
+      // Implementação stub para abertura de caixa
+      // Pode ser expandida para persistir em banco de dados
+      return true;
+    } catch (e) {
+      _error = 'Erro ao abrir caixa: $e';
+      notifyListeners();
+      return false;
     }
   }
 
