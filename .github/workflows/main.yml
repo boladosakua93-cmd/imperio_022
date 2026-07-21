@@ -10,20 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.x'
           channel: 'stable'
+          cache: true
 
-      - name: Install dependencies
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Build Android APK
-        run: flutter build apk --release
+      - name: Build Android APK (Release)
+        run: |
+          flutter build apk \
+            --release \
+            --target-platform=android-arm64 \
+            --split-per-abi=false \
+            --no-tree-shake-icons
+        env:
+          GRADLE_OPTS: "-Xmx1024m -XX:MaxMetaspaceSize=512m"
 
-      - name: Upload APK artifact
+      - name: Upload APK to artifacts
         uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
