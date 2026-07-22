@@ -1,0 +1,6 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/agendar/page": "/agendar",
+  "/api/agendamentos/route": "/api/agendamentos"
+}

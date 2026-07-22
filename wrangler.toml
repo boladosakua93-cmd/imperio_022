@@ -1,0 +1,14 @@
+name = "imperio022"
+account_id = "a470fa9a7bcaa226cc3b2afe7f2e35ff"
+main = ".open-next/worker.js"
+compatibility_date = "2026-07-22"
+compatibility_flags = ["nodejs_compat"]
+
+
+
+
+[[d1_databases]]
+binding = "DB"
+database_name = "imperio_db"
+database_id = "6d1c0e0e-7c2a-44d1-9076-7b1fbee924f5"
+
