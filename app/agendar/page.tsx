@@ -227,9 +227,10 @@ function AgendarContent() {
                       <div style={{ fontWeight: 700, fontSize: 15, color: sel ? "#fff" : "#ccc" }}>{s.name}</div>
                       <div style={{ color: "#555", fontSize: 12, marginTop: 2 }}>{s.duration}</div>
                     </div>
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: 17, color: sel ? "#e01e1e" : "#A0A0A0", textAlign: "right" }}>R$ {s.price}</div>
-                      <div style={{ fontSize: 11, color: "#555", textAlign: "right", marginTop: 2 }}>+ taxa R$ {TAXA_RESERVA}</div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 10, fontWeight: 600, color: "#777", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 2 }}>A partir de</div>
+                      <div style={{ fontWeight: 800, fontSize: 17, color: sel ? "#e01e1e" : "#A0A0A0" }}>R$ {s.price},00</div>
+                      <div style={{ fontSize: 11, color: "#555", marginTop: 2 }}>+ taxa R$ {TAXA_RESERVA}</div>
                     </div>
                     {sel && <CheckCircle size={17} color="#e01e1e" />}
                   </button>
