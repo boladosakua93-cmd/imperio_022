@@ -1,5 +1,5 @@
 {
-  "name": "imperio022",
+  "name": "vibe-next-template",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,7 +12,6 @@
     "db:studio": "drizzle-kit studio",
     "build:worker": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare build && wrangler dev",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
   },
   "dependencies": {
@@ -70,8 +69,8 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260721.1",
-    "@opennextjs/cloudflare": "^1.20.2",
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "@opennextjs/cloudflare": "^1.19.10",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/node": "^22",
     "@types/react": "19.2.14",

@@ -1,14 +1,18 @@
-name = "imperio022"
-account_id = "a470fa9a7bcaa226cc3b2afe7f2e35ff"
+#:schema node_modules/wrangler/config-schema.json
+# 部署到 Cloudflare Workers + Static Assets。
+# `name` 由后端在部署时动态注入（沙箱跑 `wrangler deploy --dry-run --outdir <out>` 时替换占位）。
+name = "vibe-web-template"
 main = ".open-next/worker.js"
-compatibility_date = "2026-07-22"
+compatibility_date = "2025-03-01"
 compatibility_flags = ["nodejs_compat"]
 
+[assets]
+directory = ".open-next/assets"
+binding   = "ASSETS"
 
-
-
-[[d1_databases]]
-binding = "DB"
-database_name = "imperio_db"
-database_id = "6d1c0e0e-7c2a-44d1-9076-7b1fbee924f5"
-
+# DB 连接默认走 raw TCP：DATABASE_URL 由后端作为 secret_text binding 注入。
+# 升级 Hyperdrive 时由后端动态往部署 metadata.bindings 加 hyperdrive binding，
+# 模板源码不需要改 wrangler.toml。
+# [[hyperdrive]]
+# binding = "HYPERDRIVE"
+# id      = "<placeholder>"

@@ -1,21 +1,24 @@
+CREATE TYPE "public"."forma_pagamento" AS ENUM('dinheiro', 'pix', 'credito', 'debito', 'outro');--> statement-breakpoint
+CREATE TYPE "public"."status_pagamento" AS ENUM('pendente', 'pago');--> statement-breakpoint
+CREATE TYPE "public"."status_veiculo" AS ENUM('aguardando', 'em_servico', 'concluido', 'entregue');--> statement-breakpoint
 CREATE TABLE "clientes" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"nome" text NOT NULL,
 	"telefone" text DEFAULT '' NOT NULL,
-	"criado_em" text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"criado_em" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "funcionarios" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"nome" text NOT NULL,
 	"telefone" text DEFAULT '' NOT NULL,
 	"cargo" text DEFAULT 'Lavador' NOT NULL,
-	"ativo" integer DEFAULT true NOT NULL,
-	"criado_em" text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"ativo" boolean DEFAULT true NOT NULL,
+	"criado_em" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "ordens" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"numero" integer NOT NULL,
 	"cliente_id" text,
 	"nome_cliente" text NOT NULL,
@@ -29,23 +32,23 @@ CREATE TABLE "ordens" (
 	"funcionario_id" text,
 	"funcionario_nome" text DEFAULT '' NOT NULL,
 	"comissao_valor" integer DEFAULT 0 NOT NULL,
-	"status" text DEFAULT 'aguardando' NOT NULL,
-	"status_pagamento" text DEFAULT 'pendente' NOT NULL,
-	"forma_pagamento" text,
+	"status" "status_veiculo" DEFAULT 'aguardando' NOT NULL,
+	"status_pagamento" "status_pagamento" DEFAULT 'pendente' NOT NULL,
+	"forma_pagamento" "forma_pagamento",
 	"observacoes" text DEFAULT '' NOT NULL,
-	"entrada_em" text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"saida_em" text
+	"entrada_em" timestamp DEFAULT now() NOT NULL,
+	"saida_em" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "servicos" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"nome" text NOT NULL,
 	"descricao" text DEFAULT '' NOT NULL,
 	"preco" integer NOT NULL,
 	"comissao" integer DEFAULT 0 NOT NULL,
 	"duracao_min" integer DEFAULT 30 NOT NULL,
-	"ativo" integer DEFAULT true NOT NULL,
-	"criado_em" text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"ativo" boolean DEFAULT true NOT NULL,
+	"criado_em" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "ordens" ADD CONSTRAINT "ordens_cliente_id_clientes_id_fk" FOREIGN KEY ("cliente_id") REFERENCES "public"."clientes"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

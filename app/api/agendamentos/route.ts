@@ -1,129 +1,120 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "../../../db/index";
-import { ordens, servicos } from "../../../db/schemas/schema";
-import { eq, sql, like } from "drizzle-orm";
 
-export async function GET(req: NextRequest) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const data = searchParams.get("data");
+// In-memory store (works without DB setup)
+type Agendamento = {
+  id: string;
+  servico: string;
+  servicoNome: string;
+  servicoPreco: number;
+  data: string;
+  horario: string;
+  nomeCliente: string;
+  telefone: string;
+  tipoVeiculo: string;
+  placa: string;
+  modelo: string;
+  observacoes: string;
+  status: "pendente" | "confirmado" | "concluido" | "cancelado";
+  criadoEm: string;
+};
 
-    if (data) {
-      // Buscar apenas horários ocupados para a data específica
-      // O SQLite no D1 usa || para concatenação de strings
-      const searchPattern = `%Agendado via Site para: ${data}%`;
-      const ocupados = await db.select({
-        observacoes: ordens.observacoes
-      })
-      .from(ordens)
-      .where(like(ordens.observacoes, searchPattern));
+// Use global to persist across hot reloads in dev
+declare global {
+  // eslint-disable-next-line no-var
+  var __agendamentos: Agendamento[] | undefined;
+}
 
-      // Extrair o horário das observações: "Agendado via Site para: YYYY-MM-DD às HH:MM"
-      const horarios = ocupados.map((o: { observacoes: string | null }) => {
-        const match = o.observacoes?.match(/às (\d{2}:\d{2})/);
-        return match ? match[1] : null;
-      }).filter((h: string | null) => h !== null);
-
-      return NextResponse.json({ 
-        horariosOcupados: horarios 
-      });
-    }
-
-    const allOrdens = await db.select().from(ordens);
-    return NextResponse.json({ agendamentos: allOrdens });
-  } catch (error) {
-    console.error("Erro ao buscar agendamentos:", error);
-    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+function getStore(): Agendamento[] {
+  if (!global.__agendamentos) {
+    global.__agendamentos = [
+      {
+        id: "1",
+        servico: "lavagem-completa",
+        servicoNome: "Lavagem Completa",
+        servicoPreco: 60,
+        data: new Date().toISOString().split("T")[0],
+        horario: "09:00",
+        nomeCliente: "João Silva",
+        telefone: "(11) 99999-1111",
+        tipoVeiculo: "Sedan",
+        placa: "ABC-1234",
+        modelo: "Toyota Corolla",
+        observacoes: "",
+        status: "confirmado",
+        criadoEm: new Date().toISOString(),
+      },
+      {
+        id: "2",
+        servico: "polimento",
+        servicoNome: "Polimento",
+        servicoPreco: 150,
+        data: new Date().toISOString().split("T")[0],
+        horario: "14:00",
+        nomeCliente: "Maria Santos",
+        telefone: "(11) 98888-2222",
+        tipoVeiculo: "SUV",
+        placa: "DEF-5678",
+        modelo: "Honda HRV",
+        observacoes: "Tem um risco no capô",
+        status: "pendente",
+        criadoEm: new Date().toISOString(),
+      },
+      {
+        id: "3",
+        servico: "pacote-vip",
+        servicoNome: "Pacote VIP",
+        servicoPreco: 420,
+        data: new Date(Date.now() + 86400000).toISOString().split("T")[0],
+        horario: "10:00",
+        nomeCliente: "Pedro Costa",
+        telefone: "(11) 97777-3333",
+        tipoVeiculo: "Pickup",
+        placa: "GHI-9012",
+        modelo: "Ford Ranger",
+        observacoes: "Tratar com cuidado os bancos de couro",
+        status: "pendente",
+        criadoEm: new Date().toISOString(),
+      },
+    ];
   }
+  return global.__agendamentos;
+}
+
+export async function GET() {
+  const store = getStore();
+  return NextResponse.json({ agendamentos: store });
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    interface AgendamentoBody {
-      servico: string;
-      servicoNome: string;
-      servicoPreco: number;
-      data: string;
-      horario: string;
-      nomeCliente: string;
-      telefone: string;
-      tipoVeiculo: string;
-      placa: string;
-      modelo: string;
-      observacoes: string;
-      taxaReserva: number;
-      funcionarioNome: string;
-      funcionarioId: string;
-    }
-    const body: AgendamentoBody = await req.json();
+  const body = await req.json();
+  const store = getStore();
 
-    // Buscar próximo número de ordem
-    const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(ordens);
-    const numero = Number(count) + 1;
+  const novo: Agendamento = {
+    id: Date.now().toString(),
+    servico: body.servico || "",
+    servicoNome: body.servicoNome || "",
+    servicoPreco: body.servicoPreco || 0,
+    data: body.data || "",
+    horario: body.horario || "",
+    nomeCliente: body.nomeCliente || "",
+    telefone: body.telefone || "",
+    tipoVeiculo: body.tipoVeiculo || "",
+    placa: body.placa || "",
+    modelo: body.modelo || "",
+    observacoes: body.observacoes || "",
+    status: "pendente",
+    criadoEm: new Date().toISOString(),
+  };
 
-    // Buscar informações do serviço
-    // O formulário público envia 'moto', 'hatch', 'sedan', 'suv' ou o nome do serviço
-    let servicoNome = body.servicoNome || body.servico || "";
-    let servicoPreco = Math.round(parseFloat(String(body.servicoPreco || 0)) * 100);
-    let comissaoValor = 0;
-    let servicoIdEncontrado = null;
-
-    // Tentar encontrar o serviço no banco pelo nome (case insensitive)
-    if (servicoNome) {
-      const [s] = await db.select().from(servicos).where(like(servicos.nome, `%${servicoNome}%`));
-      if (s) {
-        servicoIdEncontrado = s.id;
-        servicoNome = s.nome;
-        servicoPreco = s.preco;
-        comissaoValor = s.comissao;
-      }
-    }
-
-    // Criar a ordem no banco de dados
-    const [novaOrdem] = await db.insert(ordens).values({
-      numero,
-      nomeCliente: body.nomeCliente || "Cliente Agendamento",
-      telefoneCliente: body.telefone || "",
-      modeloVeiculo: body.modelo || "Não informado",
-      placaVeiculo: body.placa || "",
-      corVeiculo: "", 
-      servicoId: servicoIdEncontrado, // Usa o ID real do banco se encontrou, ou null para evitar erro de FK
-      servicoNome: servicoNome,
-      servicoPreco: servicoPreco,
-      status: "aguardando",
-      statusPagamento: "pendente",
-      observacoes: `Agendado via Site para: ${body.data} às ${body.horario}. Obs: ${body.observacoes || "Nenhuma"}`,
-      comissaoValor: comissaoValor,
-      funcionarioNome: body.funcionarioNome,
-      funcionarioId: body.funcionarioId,
-    }).returning();
-
-    return NextResponse.json({ success: true, agendamento: novaOrdem }, { status: 201 });
-  } catch (error) {
-    console.error("Erro ao criar agendamento:", error);
-    return NextResponse.json({ error: "Erro ao processar agendamento" }, { status: 500 });
-  }
+  store.push(novo);
+  return NextResponse.json({ success: true, agendamento: novo }, { status: 201 });
 }
 
 export async function PATCH(req: NextRequest) {
-  try {
-    interface PatchBody {
-      id: string;
-      status?: "pendente" | "confirmado" | "concluido" | "cancelado";
-      // Adicione outras propriedades que podem ser atualizadas aqui
-    }
-    const body: PatchBody = await req.json();
-    if (!body.id) return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
-
-    const [updated] = await db.update(ordens)
-      .set({ ...body })
-      .where(eq(ordens.id, body.id))
-      .returning();
-
-    if (!updated) return NextResponse.json({ error: "Não encontrado" }, { status: 404 });
-    return NextResponse.json({ success: true, agendamento: updated });
-  } catch (error) {
-    console.error("Erro ao atualizar agendamento:", error);
-    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
-  }
+  const body = await req.json();
+  const store = getStore();
+  const idx = store.findIndex(a => a.id === body.id);
+  if (idx === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  store[idx] = { ...store[idx], ...body };
+  return NextResponse.json({ success: true, agendamento: store[idx] });
 }

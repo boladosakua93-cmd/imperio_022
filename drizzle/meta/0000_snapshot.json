@@ -1,5 +1,5 @@
 {
-  "id": "6bc1ee44-9b1e-44f2-9e8d-97f7e8dcc21c",
+  "id": "101a0157-893c-4db6-a793-6c673f245593",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,7 +10,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -29,10 +29,10 @@
         },
         "criado_em": {
           "name": "criado_em",
-          "type": "text",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "default": "CURRENT_TIMESTAMP"
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -49,7 +49,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -75,17 +75,17 @@
         },
         "ativo": {
           "name": "ativo",
-          "type": "integer",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
           "default": true
         },
         "criado_em": {
           "name": "criado_em",
-          "type": "text",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "default": "CURRENT_TIMESTAMP"
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -102,7 +102,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -191,21 +191,24 @@
         },
         "status": {
           "name": "status",
-          "type": "text",
+          "type": "status_veiculo",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'aguardando'"
         },
         "status_pagamento": {
           "name": "status_pagamento",
-          "type": "text",
+          "type": "status_pagamento",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'pendente'"
         },
         "forma_pagamento": {
           "name": "forma_pagamento",
-          "type": "text",
+          "type": "forma_pagamento",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
         },
@@ -218,14 +221,14 @@
         },
         "entrada_em": {
           "name": "entrada_em",
-          "type": "text",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "default": "CURRENT_TIMESTAMP"
+          "default": "now()"
         },
         "saida_em": {
           "name": "saida_em",
-          "type": "text",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         }
@@ -284,7 +287,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -323,17 +326,17 @@
         },
         "ativo": {
           "name": "ativo",
-          "type": "integer",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
           "default": true
         },
         "criado_em": {
           "name": "criado_em",
-          "type": "text",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "default": "CURRENT_TIMESTAMP"
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -345,7 +348,37 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.forma_pagamento": {
+      "name": "forma_pagamento",
+      "schema": "public",
+      "values": [
+        "dinheiro",
+        "pix",
+        "credito",
+        "debito",
+        "outro"
+      ]
+    },
+    "public.status_pagamento": {
+      "name": "status_pagamento",
+      "schema": "public",
+      "values": [
+        "pendente",
+        "pago"
+      ]
+    },
+    "public.status_veiculo": {
+      "name": "status_veiculo",
+      "schema": "public",
+      "values": [
+        "aguardando",
+        "em_servico",
+        "concluido",
+        "entregue"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

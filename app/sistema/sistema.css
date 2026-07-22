@@ -1,0 +1,5 @@
+@media (max-width: 768px) {
+  .hidden-mobile-sidebar { display: none !important; }
+  .mobile-topbar { display: flex !important; }
+  .sistema-main { margin-left: 0 !important; padding: 80px 16px 32px !important; }
+}

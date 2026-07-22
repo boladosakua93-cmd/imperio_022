@@ -17,7 +17,6 @@ const services = [
   { id: "hatch",     name: "Hatch",  price: 60,  duration: "45 min", icon: Car },
   { id: "sedan",     name: "Sedan",  price: 70,  duration: "50 min", icon: Car },
   { id: "suv",       name: "SUV",    price: 100, duration: "60 min", icon: Car },
-  { id: "picape",    name: "Picape", price: 120, duration: "70 min", icon: Car },
 ];
 
 const timeSlots = [
@@ -27,11 +26,6 @@ const timeSlots = [
 ];
 
 const vehicleTypes = ["Hatch","Sedan","SUV","Pickup","Van/Minivan","Moto"];
-
-const employees = [
-  { id: "andre_pita", name: "Andre Pita" },
-  { id: "miguel", name: "Miguel" },
-];
 
 const STEPS = ["Serviço","Data & Hora","Seus Dados","Pagamento"];
 
@@ -47,10 +41,9 @@ function AgendarContent() {
     servico: servicoParam || "",
     data: "", horario: "",
     nomeCliente: "", telefone: "",
-    tipoVeiculo: "", placa: "", modelo: "", observacoes: "", funcionarioId: "",
+    tipoVeiculo: "", placa: "", modelo: "", observacoes: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [horariosOcupados, setHorariosOcupados] = useState<string[]>([]);
 
   useEffect(() => {
     if (servicoParam) {
@@ -59,42 +52,16 @@ function AgendarContent() {
     }
   }, [servicoParam]);
 
-  useEffect(() => {
-    if (form.data) {
-      fetch(`/api/agendamentos?data=${form.data}`)
-        .then(res => res.json())
-        .then(data => {
-          if ((data as { horariosOcupados: string[] }).horariosOcupados) {
-            setHorariosOcupados((data as { horariosOcupados: string[] }).horariosOcupados);
-          }
-        })
-        .catch(err => console.error("Erro ao buscar horários:", err));
-    }
-  }, [form.data]);
-
   const selectedService = services.find(s => s.id === form.servico);
   const valorRestante = selectedService ? selectedService.price - TAXA_RESERVA : 0;
 
   const getTodayStr = () => new Date().toISOString().split("T")[0];
-  const getMaxDateStr = () => {
-    const now = new Date();
-    return `${now.getFullYear()}-12-31`;
-  };
 
   const validate = (s: number) => {
     const errs: Record<string, string> = {};
     if (s === 1 && !form.servico) errs.servico = "Selecione um serviço.";
     if (s === 2) {
-      if (!form.funcionarioId) errs.funcionarioId = "Selecione um funcionário.";
-      if (!form.data) {
-        errs.data = "Informe a data.";
-      } else {
-        const selectedYear = new Date(form.data + "T12:00:00").getFullYear();
-        const currentYear = new Date().getFullYear();
-        if (selectedYear !== currentYear) {
-          errs.data = `Agendamentos permitidos apenas para o ano de ${currentYear}.`;
-        }
-      }
+      if (!form.data) errs.data = "Informe a data.";
       if (!form.horario) errs.horario = "Selecione um horário.";
     }
     if (s === 3) {
@@ -120,7 +87,6 @@ function AgendarContent() {
           servicoNome: selectedService?.name,
           servicoPreco: selectedService?.price,
           taxaReserva: TAXA_RESERVA,
-          funcionarioNome: employees.find(emp => emp.id === form.funcionarioId)?.name,
         }),
       });
       if (res.ok) setSuccess(true);
@@ -159,7 +125,7 @@ function AgendarContent() {
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
                 { label: "Serviço",      value: selectedService?.name ?? "" },
-                { label: "Data",         value: form.data ? new Date(form.data + "T12:00:00").toLocaleDateString("pt-BR") : "" },
+                { label: "Data",         value: new Date(form.data + "T12:00:00").toLocaleDateString("pt-BR") },
                 { label: "Horário",      value: form.horario },
                 { label: "Veículo",      value: `${form.modelo} (${form.tipoVeiculo})` },
                 { label: "Taxa paga (Pix)", value: `R$ ${TAXA_RESERVA},00`, highlight: true },
@@ -210,7 +176,7 @@ function AgendarContent() {
           <ArrowLeft size={16} /> Voltar
         </Link>
         <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-          <Image src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663844419538/onPgpiWUjZavTJHl.png" alt="Império 022" width={80} height={44} style={{ objectFit: "contain" }} />
+          <Image src="/logo.png" alt="Império 022" width={80} height={44} style={{ objectFit: "contain" }} />
         </div>
         <div style={{ width: 60 }} />
       </div>
@@ -262,7 +228,7 @@ function AgendarContent() {
                       <div style={{ color: "#555", fontSize: 12, marginTop: 2 }}>{s.duration}</div>
                     </div>
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: 17, color: sel ? "#e01e1e" : "#A0A0A0", textAlign: "right" }}>A partir de R$ {s.price}</div>
+                      <div style={{ fontWeight: 800, fontSize: 17, color: sel ? "#e01e1e" : "#A0A0A0", textAlign: "right" }}>R$ {s.price}</div>
                       <div style={{ fontSize: 11, color: "#555", textAlign: "right", marginTop: 2 }}>+ taxa R$ {TAXA_RESERVA}</div>
                     </div>
                     {sel && <CheckCircle size={17} color="#e01e1e" />}
@@ -279,72 +245,8 @@ function AgendarContent() {
             <h2 style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px", marginBottom: 6 }}>Data e Horário</h2>
             <p style={{ color: "#A0A0A0", marginBottom: 28, fontSize: 14 }}>Quando deseja trazer seu veículo?</p>
             <div style={{ marginBottom: 24 }}>
-              <label style={labelStyle}>Funcionário</label>
-              {errors.funcionarioId && <div style={{ color: "#ff4444", fontSize: 12, marginBottom: 8 }}>{errors.funcionarioId}</div>}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
-                {employees.map(emp => {
-                  const sel = form.funcionarioId === emp.id;
-                  return (
-                    <button
-                      key={emp.id}
-                      onClick={() => setForm(f => ({ ...f, funcionarioId: emp.id }))}
-                      style={{
-                        padding: "12px 8px",
-                        borderRadius: 10,
-                        border: `1px solid ${sel ? "rgba(224,30,30,0.5)" : "rgba(255,255,255,0.08)"}`, 
-                        background: sel ? "rgba(224,30,30,0.08)" : "var(--card)",
-                        color: sel ? "#e01e1e" : "#ccc",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        cursor: "pointer",
-                        transition: "all 200ms",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                      }}
-                    >
-                      <User size={16} /> {emp.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div style={{ marginBottom: 24 }}>
-              <label style={labelStyle}>Funcionário</label>
-              {errors.funcionarioId && <div style={{ color: "#ff4444", fontSize: 12, marginBottom: 8 }}>{errors.funcionarioId}</div>}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
-                {employees.map(emp => {
-                  const sel = form.funcionarioId === emp.id;
-                  return (
-                    <button
-                      key={emp.id}
-                      onClick={() => setForm(f => ({ ...f, funcionarioId: emp.id }))}
-                      style={{
-                        padding: "12px 8px",
-                        borderRadius: 10,
-                        border: `1px solid ${sel ? "rgba(224,30,30,0.5)" : "rgba(255,255,255,0.08)"}`, 
-                        background: sel ? "rgba(224,30,30,0.08)" : "var(--card)",
-                        color: sel ? "#e01e1e" : "#ccc",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        cursor: "pointer",
-                        transition: "all 200ms",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                      }}
-                    >
-                      <User size={16} /> {emp.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div style={{ marginBottom: 24 }}>
               <label style={labelStyle}>Data</label>
-              <input type="date" value={form.data} min={getTodayStr()} max={getMaxDateStr()}
+              <input type="date" value={form.data} min={getTodayStr()}
                 onChange={e => setForm(f => ({ ...f, data: e.target.value }))}
                 style={{ ...inputStyle, colorScheme: "dark", borderColor: errors.data ? "#ff4444" : undefined }} />
               {errors.data && <div style={{ color: "#ff4444", fontSize: 12, marginTop: 6 }}>{errors.data}</div>}
@@ -355,24 +257,9 @@ function AgendarContent() {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
                 {timeSlots.map(t => {
                   const sel = form.horario === t;
-                  const ocupado = horariosOcupados.includes(t);
                   return (
-                    <button 
-                      key={t} 
-                      disabled={ocupado}
-                      onClick={() => !ocupado && setForm(f => ({ ...f, horario: t }))}
-                      style={{ 
-                        padding: "12px 8px", 
-                        borderRadius: 10, 
-                        border: `1px solid ${sel ? "rgba(224,30,30,0.6)" : ocupado ? "transparent" : "rgba(255,255,255,0.08)"}`, 
-                        background: sel ? "rgba(224,30,30,0.1)" : ocupado ? "rgba(255,255,255,0.02)" : "var(--card)", 
-                        color: sel ? "#e01e1e" : ocupado ? "#333" : "#A0A0A0", 
-                        fontSize: 14, 
-                        fontWeight: sel ? 700 : 400, 
-                        cursor: ocupado ? "not-allowed" : "pointer", 
-                        transition: "all 150ms",
-                        textDecoration: ocupado ? "line-through" : "none"
-                      }}>
+                    <button key={t} onClick={() => setForm(f => ({ ...f, horario: t }))}
+                      style={{ padding: "12px 8px", borderRadius: 10, border: `1px solid ${sel ? "rgba(224,30,30,0.6)" : "rgba(255,255,255,0.08)"}`, background: sel ? "rgba(224,30,30,0.1)" : "var(--card)", color: sel ? "#e01e1e" : "#A0A0A0", fontSize: 14, fontWeight: sel ? 700 : 400, cursor: "pointer", transition: "all 150ms" }}>
                       {t}
                     </button>
                   );
@@ -478,7 +365,7 @@ function AgendarContent() {
                 Escaneie o QR Code Pix
               </div>
               <Image
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663844419538/ekARdragOyKKPmhi.png"
+                src="/qrcode-pix.png"
                 alt="QR Code Pix Império 022"
                 width={280}
                 height={373}
